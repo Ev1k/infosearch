@@ -8,7 +8,22 @@ def load_index():
 
     return index
 
+def check_operators(words):
+    if "and" in words:
+        pass
+    elif 'or' in words:
+        pass
+    elif 'not' in words:
+        pass
+
 
 INDEX_FILE = "inverted_index.txt"
 index = load_index()
-print(index)
+while True:
+    query = input('Введите запрос: ')
+    if query == 'stop':
+        break
+    words = query.split()
+    words = list(map(lambda x: x.lower(), words))
+    print(words)
+    check_operators(words)
