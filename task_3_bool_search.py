@@ -16,7 +16,7 @@ def tokenize_query(query):
     return re.findall(r'\(|\)|and|or|not|[а-яё]+', query.lower())
 
 
-# упорядочивает слова, учитывая приоритет операций и скобки
+#  упорядочивает слова, учитывая приоритет операций и скобки
 def check_operators(tokenized_query):
     print(tokenized_query)
     output = []
