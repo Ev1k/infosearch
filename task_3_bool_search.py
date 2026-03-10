@@ -18,12 +18,10 @@ def tokenize_query(query):
 
 #  упорядочивает слова, учитывая приоритет операций и скобки
 def check_operators(tokenized_query):
-    print(tokenized_query)
     output = []
     stack = []
     priority = {'not': 3, "and": 2, "or": 1}
     for token in tokenized_query:
-        print(token, stack, output)
         if token == '(':
             stack.append(token)
         elif token == ')':
@@ -37,10 +35,35 @@ def check_operators(tokenized_query):
         else:
             output.append(token)
     while stack:
-        print(stack)
         output.append(stack.pop())
-    print(output)
     return output
+
+
+# вычисляет результат по RPN
+def evaluate_rpn(rpn, index):
+    stack = []
+    # множество всех документов (для NOT)
+    all_docs = set()
+    for docs in index.values():
+        all_docs |= docs
+    for token in rpn:
+        if token not in ("and", "or", "not"):
+            stack.append(index.get(token, set()))
+        elif token == "not":
+            docs = stack.pop()
+            stack.append(all_docs - docs)
+        else:
+            right = stack.pop()
+            left = stack.pop()
+            if token == "and":
+                stack.append(left & right)
+            elif token == "or":
+                stack.append(left | right)
+
+    if stack:
+        return stack[0]
+    else:
+        return set()
 
 
 INDEX_FILE = "inverted_index.txt"
@@ -50,4 +73,6 @@ while True:
     if query == 'stop':
         break
     tokenized_query = tokenize_query(query)
-    check_operators(tokenized_query)
+    rpn = check_operators(tokenized_query)
+    result = evaluate_rpn(rpn, index)
+    print("Документы:", sorted(result))
