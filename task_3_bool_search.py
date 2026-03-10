@@ -1,3 +1,5 @@
+import re
+
 # парсит файл с инвертированным списком
 def load_index():
     index = {}
@@ -8,22 +10,30 @@ def load_index():
 
     return index
 
-def check_operators(words):
-    if "and" in words:
-        pass
-    elif 'or' in words:
-        pass
-    elif 'not' in words:
-        pass
+def tokenize_query(query):
+    return re.findall(r'\(|\)|and|or|not|[а-яё]+', query.lower())
+
+def check_operators(tokenized_query):
+    for token in tokenized_query:
+        if token == '(':
+            pass
+        elif token == '(':
+            pass
+        elif token == "and":
+            pass
+        elif token == "or":
+            pass
+        elif token == "not":
+            pass
+        else:
+            pass
 
 
 INDEX_FILE = "inverted_index.txt"
 index = load_index()
 while True:
-    query = input('Введите запрос: ')
+    query = input('Введите запрос: ').lower()
     if query == 'stop':
         break
-    words = query.split()
-    words = list(map(lambda x: x.lower(), words))
-    print(words)
-    check_operators(words)
+    tokenized_query = tokenize_query(query)
+    check_operators(tokenized_query)
