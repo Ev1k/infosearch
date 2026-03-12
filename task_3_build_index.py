@@ -9,6 +9,7 @@ def build_index():
     inverted_index = defaultdict(set)
     for filename in os.listdir(LEMMAS_DIR):
         doc_id = filename.replace(".txt", "")
+        doc_id = doc_id.replace("lemmas_", "")
         filepath = os.path.join(LEMMAS_DIR, filename)
         with open(filepath, encoding="utf-8") as f:
             for line in f:

@@ -1,4 +1,6 @@
 import re
+import pymorphy3
+
 
 # парсит файл с инвертированным списком
 def load_index():
@@ -11,9 +13,21 @@ def load_index():
     return index
 
 
-# разбивает ввод на токены
+# лемматизация одного слова
+def lemmatize_word(word):
+    return morph.parse(word)[0].normal_form
+
+
+# разбивает ввод на токены + лемматизирует слова
 def tokenize_query(query):
-    return re.findall(r'\(|\)|and|or|not|[а-яё]+', query.lower())
+    tokens = re.findall(r'\(|\)|and|or|not|[а-яё]+', query.lower())
+    norm_tokens = []
+    for token in tokens:
+        if token in ('and', 'or', 'not', '(', ')'):
+            norm_tokens.append(token)
+        else:
+            norm_tokens.append(lemmatize_word(token))
+    return norm_tokens
 
 
 #  упорядочивает слова, учитывая приоритет операций и скобки
@@ -66,6 +80,7 @@ def evaluate_rpn(rpn, index):
         return set()
 
 
+morph = pymorphy3.MorphAnalyzer()
 INDEX_FILE = "inverted_index.txt"
 index = load_index()
 while True:
