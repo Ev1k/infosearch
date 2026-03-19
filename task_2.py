@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import pymorphy3
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PAGES_DIR = BASE_DIR 
+PAGES_DIR = os.path.join(BASE_DIR, "text")
 TOKENS_DIR = os.path.join(BASE_DIR, "tokens")
 LEMMAS_DIR = os.path.join(BASE_DIR, "lemmas")
 TOKENS_INDEX = os.path.join(BASE_DIR, "tokens_index.txt")
