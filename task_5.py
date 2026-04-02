@@ -2,8 +2,11 @@ import math
 import os
 import re
 
-import pymorphy3
 from collections import Counter
+try:
+    import pymorphy3
+except ImportError:
+    pymorphy3 = None
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,7 +16,7 @@ INDEX_FILE = os.path.join(BASE_DIR, "index.txt")
 DOC_FILENAME_PATTERN = re.compile(r"^(\d+)\.txt$")
 TOKEN_PATTERN = re.compile(r"[а-яёa-z0-9]+", re.IGNORECASE)
 
-morph = pymorphy3.MorphAnalyzer()
+morph = pymorphy3.MorphAnalyzer() if pymorphy3 else None
 
 # достаёт id документа из имени файла
 def extract_doc_id(filename):
@@ -90,6 +93,10 @@ def tokenize(text):
 # лемматизация запроса
 def lemmatize_tokens(tokens):
     lemmas = []
+
+    if morph is None:
+        # fallback: если pymorphy3 не установлен, используем токены как есть
+        return tokens
 
     for token in tokens:
         parsed = morph.parse(token)[0]
